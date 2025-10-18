@@ -8,17 +8,19 @@ import os
 # 日本語フォントの設定
 def setup_japanese_fonts():
     # まずローカルのフォントを試す
-    font_candidates = ['Noto Sans CJK JP', 'IPAexGothic', 'MS Gothic', 'Yu Gothic']
+    font_candidates = ['Noto Sans JP','Noto Sans CJK JP', 'IPAexGothic', 'MS Gothic', 'Yu Gothic']
     available_fonts = []
     
     for font_name in font_candidates:
         try:
             fp = fm.FontProperties(family=[font_name])
             fn = fm.findfont(fp)
-            if fn is not None:
+            # 実際にフォントファイルが存在し、デフォルトのフォントでないことを確認
+            if os.path.exists(fn) and not fn.endswith('DejaVuSans.ttf'):
                 available_fonts.append(font_name)
-        except:
-            continue
+                st.text(f"フォントが見つかりました: {font_name} ({fn})")
+        except Exception as e:
+            st.text(f"フォント {font_name} は利用できません: {str(e)}")
     
     if not available_fonts:
         # ローカルフォントが見つからない場合、Noto Sans JPをダウンロード
@@ -56,7 +58,7 @@ def main():
 
     # 現在使用中のフォントファミリーを表示
     current_font = plt.rcParams['font.family']
-    st.text(f"使用中のフォント候補: {', '.join(current_font)}")
+    st.text(f"使用中のフォント: {', '.join(current_font)}")
 
     x = np.linspace(0, 2 * np.pi, 400)
     y = np.sin(x)
