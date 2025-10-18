@@ -5,14 +5,50 @@ import matplotlib as mpl
 from matplotlib import font_manager as fm
 import os
 
-# see https://discuss.streamlit.io/t/font-for-japanese-character-in-matplotlib-and-seaborn/37206/9
-fpath = os.path.join(os.getcwd(), "streamlit_app/Noto_Sans_JP/NotoSansJP-Regular.otf")
-prop = fm.FontProperties(fname=fpath)
-font_dir = ['streamlit_app/Noto_Sans_JP']
-for font in fm.findSystemFonts(font_dir):
-    fm.fontManager.addfont(font)
+# 日本語フォントの設定
+def setup_japanese_fonts():
+    # まずローカルのフォントを試す
+    font_candidates = ['Noto Sans CJK JP', 'IPAexGothic', 'MS Gothic', 'Yu Gothic']
+    available_fonts = []
+    
+    for font_name in font_candidates:
+        try:
+            fp = fm.FontProperties(family=[font_name])
+            fn = fm.findfont(fp)
+            if fn is not None:
+                available_fonts.append(font_name)
+        except:
+            continue
+    
+    if not available_fonts:
+        # ローカルフォントが見つからない場合、Noto Sans JPをダウンロード
+        try:
+            import urllib.request
+            import tempfile
+            
+            # Noto Sans JP フォントをダウンロード
+            FONT_URL = "https://raw.githubusercontent.com/googlefonts/noto-cjk/main/Sans/OTF/Japanese/NotoSansJP-Regular.otf"
+            
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.otf') as tf:
+                with urllib.request.urlopen(FONT_URL) as response:
+                    tf.write(response.read())
+                font_path = tf.name
+            
+            # ダウンロードしたフォントを登録
+            fm.fontManager.addfont(font_path)
+            available_fonts = ['Noto Sans JP']
+            st.text("日本語フォントをダウンロードしました")
+        except Exception as e:
+            st.warning(f"フォントのダウンロードに失敗しました: {e}")
+    
+    # フォント設定を適用
+    if available_fonts:
+        plt.rcParams['font.family'] = available_fonts[0]
+    else:
+        plt.rcParams['font.family'] = ['sans-serif']
 
-plt.rcParams['font.family'] = ['Noto Sans JP','IPAexGothic', 'MS Gothic', 'Yu Gothic','sans-serif']
+# フォント設定を実行
+setup_japanese_fonts()
 
 def main():
     st.title("sin(x) のプロット")
