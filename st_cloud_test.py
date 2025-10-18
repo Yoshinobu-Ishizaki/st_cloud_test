@@ -8,7 +8,8 @@ import os
 # 日本語フォントの設定
 def setup_japanese_fonts():
     # まずローカルのフォントを試す
-    font_candidates = ['Noto Sans JP','Noto Sans CJK JP', 'IPAexGothic', 'MS Gothic', 'Yu Gothic']
+    # font_candidates = ['Noto Sans JP','Noto Sans CJK JP', 'IPAexGothic', 'MS Gothic', 'Yu Gothic']
+    font_candidates = ['IPAexGothic', 'MS Gothic', 'Yu Gothic']
     available_fonts = []
     
     for font_name in font_candidates:
@@ -19,6 +20,8 @@ def setup_japanese_fonts():
             if os.path.exists(fn) and not fn.endswith('DejaVuSans.ttf'):
                 available_fonts.append(font_name)
                 st.text(f"フォントが見つかりました: {font_name} ({fn})")
+            else:
+                st.text(f"フォント {font_name} は利用できません")
         except Exception as e:
             st.text(f"フォント {font_name} は利用できません: {str(e)}")
     
@@ -29,7 +32,7 @@ def setup_japanese_fonts():
             import tempfile
             
             # Noto Sans JP フォントをダウンロード
-            FONT_URL = "https://raw.githubusercontent.com/googlefonts/noto-cjk/main/Sans/OTF/Japanese/NotoSansJP-Regular.otf"
+            FONT_URL = "https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP%5Bwght%5D.ttf"
             
             with tempfile.NamedTemporaryFile(delete=False, suffix='.otf') as tf:
                 with urllib.request.urlopen(FONT_URL) as response:
@@ -45,7 +48,7 @@ def setup_japanese_fonts():
     
     # フォント設定を適用
     if available_fonts:
-        plt.rcParams['font.family'] = available_fonts[0]
+        plt.rcParams['font.family'] = available_fonts
     else:
         plt.rcParams['font.family'] = ['sans-serif']
 
