@@ -1,6 +1,23 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib as mpl
+from matplotlib import font_manager as fm
+import os
+
+# 日本語フォントの設定（システムにインストールされているフォントを探す）
+font_dirs = ['/usr/share/fonts/']  # Linuxの一般的なフォントディレクトリ
+font_files = fm.findSystemFonts(fontpaths=font_dirs)
+
+# 見つかったフォントをMatplotlibに登録
+for font_file in font_files:
+    try:
+        fm.fontManager.addfont(font_file)
+    except:
+        continue
+
+# 日本語フォントファミリーを設定（複数のフォントを優先順位で指定）
+plt.rcParams['font.family'] = ['IPAexGothic', 'Noto Sans CJK JP', 'MS Gothic', 'Yu Gothic']
 
 def main():
     st.title("sin(x) のプロット")
@@ -11,6 +28,7 @@ def main():
 
     fig, ax = plt.subplots(figsize=(8, 4))
     ax.plot(x, y, color="tab:blue", label="sin(x)")
+    ax.set_title("Sin(x)のプロット")  # タイトルを追加
     ax.set_xlabel("x")
     ax.set_ylabel("sin(x)")
     ax.set_xlim(0, 2 * np.pi)
