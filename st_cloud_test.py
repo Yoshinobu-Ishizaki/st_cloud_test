@@ -5,6 +5,12 @@ import matplotlib as mpl
 from matplotlib import font_manager as fm
 import os
 
+# see https://discuss.streamlit.io/t/font-for-japanese-character-in-matplotlib-and-seaborn/37206/9
+fpath = os.path.join(os.getcwd(), "streamlit_app/Noto_Sans_JP/NotoSansJP-Regular.otf")
+prop = fm.FontProperties(fname=fpath)
+font_dir = ['streamlit_app/Noto_Sans_JP']
+for font in fm.findSystemFonts(font_dir):
+    fm.fontManager.addfont(font)
 
 plt.rcParams['font.family'] = ['Noto Sans JP','IPAexGothic', 'MS Gothic', 'Yu Gothic','sans-serif']
 
@@ -14,7 +20,7 @@ def main():
 
     # 現在使用中のフォントファミリーを表示
     current_font = plt.rcParams['font.family']
-    st.text(f"使用中のフォント: {', '.join(current_font)}")
+    st.text(f"使用中のフォント候補: {', '.join(current_font)}")
 
     x = np.linspace(0, 2 * np.pi, 400)
     y = np.sin(x)
