@@ -5,39 +5,8 @@ import matplotlib as mpl
 from matplotlib import font_manager as fm
 import os
 
-# 日本語フォントの設定（システムにインストールされているすべてのフォントを探す）
-font_files = fm.findSystemFonts()  # デフォルトの検索パスを使用
 
-# 使用可能な日本語フォントを確認
-available_fonts = []
-has_noto_cjk = False
-
-# Noto CJK フォントの存在確認
-for font_file in font_files:
-    if 'NotoSansCJK' in font_file:
-        has_noto_cjk = True
-        break
-
-# フォントの確認と登録
-for font_name in ['IPAexGothic', 'MS Gothic', 'Yu Gothic']:
-    try:
-        fm.findfont(font_name, fallback=False)
-        available_fonts.append(font_name)
-    except:
-        continue
-
-# Noto Sans CJK JP が見つかった場合は追加
-if has_noto_cjk:
-    available_fonts.insert(0, 'Noto Sans CJK JP')  # 優先度を最も高く設定
-
-if available_fonts:
-    # 使用可能なフォントが見つかった場合はそれを設定
-    font_name = available_fonts[0]  # 最初に見つかったフォントを使用
-    plt.rcParams['font.family'] = 'sans-serif'  # デフォルトファミリーを設定
-    plt.rcParams['font.sans-serif'] = [font_name] + plt.rcParams['font.sans-serif']  # 日本語フォントを先頭に追加
-else:
-    # 使用可能なフォントが見つからない場合はデフォルトのフォントを使用
-    plt.rcParams['font.family'] = 'sans-serif'
+plt.rcParams['font.family'] = ['Noto Sans JP','IPAexGothic', 'MS Gothic', 'Yu Gothic','sans-serif']
 
 def main():
     st.title("sin(x) のプロット")
@@ -45,10 +14,7 @@ def main():
 
     # 現在使用中のフォントファミリーを表示
     current_font = plt.rcParams['font.family']
-    if isinstance(current_font, list):
-        st.text(f"使用中のフォント: {', '.join(current_font)}")
-    else:
-        st.text(f"使用中のフォント: {current_font}")
+    st.text(f"使用中のフォント: {', '.join(current_font)}")
 
     x = np.linspace(0, 2 * np.pi, 400)
     y = np.sin(x)
